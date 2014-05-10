@@ -64,16 +64,21 @@ document.addEventListener("webkitAnimationStart", function (event) {
 					realEmos.push(potenEmos[p]);
 				}
 			}
+
 			if (realEmos.length == 0) {
 				setTimeout(function() {
 					currentText = textbox.innerHTML;
 				}, 1);
-			}
-			else {
+			} else {
 				for (var r = 0; r < realEmos.length; r++) {
 					var prevLen = sibLen(realEmos[r].previousSibling, "prev");
 					var nextLen = sibLen(realEmos[r].nextSibling, "next");
-					this.replaceChild(document.createTextNode(currentText.substr(prevLen, (currentText.length - nextLen - prevLen))), realEmos[r]);
+
+          // Fix for emoticon text that contains <, >, &
+          var div = document.createElement('div');
+          div.innerHTML = currentText.substr(prevLen, (currentText.length - nextLen - prevLen));
+
+					this.replaceChild(document.createTextNode(div.firstChild.nodeValue), realEmos[r]);
 					setTimeout(function() {
 						currentText = textbox.innerHTML;
 					}, 1);
